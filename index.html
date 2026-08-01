@@ -1,0 +1,608 @@
+<!DOCTYPE HTML>
+<HTML lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AtomSim</title>
+
+    <style>
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            color: white;
+            background-color: black;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+
+        #title {
+            position: fixed;
+            top: 15px;
+            left: 18px;
+
+            font-size: 20px;
+            font-weight: bold;
+
+            z-index: 5;
+        }
+
+
+        #ui {
+            position: fixed;
+
+            top: 52px;
+            left: 18px;
+
+            width: 250px;
+
+            padding: 10px 0;
+
+            z-index: 5;
+        }
+
+
+        #uiTitle {
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+
+        #particleSlider {
+            width: 160px;
+            height: 28px;
+
+            padding: 4px 7px;
+
+            color: white;
+            background: #111;
+
+            border: 1px solid #777;
+
+            font-size: 13px;
+
+            box-sizing: border-box;
+        }
+
+
+        #applybutton,
+        #explanationButton {
+            height: 28px;
+
+            padding: 0 12px;
+
+            color: white;
+            background: #111;
+
+            border: 1px solid #777;
+
+            cursor: pointer;
+        }
+
+
+        #applybutton:hover,
+        #explanationButton:hover {
+            background: #222;
+        }
+
+
+        #explanationButton {
+            margin-top: 15px;
+        }
+
+
+        #renderEndSection {
+            margin-top: 12px;
+
+            font-size: 12px;
+            color: #ccc;
+        }
+
+
+        #renderEndFrame {
+            vertical-align: middle;
+        }
+
+
+        #renderEndDescription {
+            margin-top: 5px;
+
+            color: #888;
+
+            line-height: 1.4;
+        }
+
+
+
+        #particleGuide {
+            position: fixed;
+
+            bottom: 18px;
+            left: 18px;
+
+            font-size: 11px;
+
+            z-index: 5;
+        }
+
+        #orbitControlsGuide {
+            position: fixed;
+
+            bottom: 18px;
+            right: 18px;
+
+            font-size: 11px;
+
+            z-index: 5;
+        }
+
+
+        #guideTitle {
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+
+        .guideRow {
+            margin: 4px 0;
+        }
+
+
+    #explanationDialog {
+        width: min(600px, 80vw);
+        max-height: 75vh;
+
+        padding: 25px;
+
+        color: white;
+        background: #111;
+
+        border: 1px solid #777;
+
+        font-family: Arial, sans-serif;
+
+        overflow-y: auto;
+    }
+
+
+        #explanationDialog::backdrop {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+
+        #explanationDialog h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+
+            font-size: 20px;
+        }
+
+
+        #explanationDialog p {
+            color: #ccc;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        #explanationDialog h3 {
+            margin-top: 20px;
+
+            font-size: 15px;
+        }
+
+
+        #closeExplanation {
+            margin-top: 15px;
+
+            padding: 7px 14px;
+
+            color: white;
+            background: #222;
+
+            border: 1px solid #777;
+
+            cursor: pointer;
+        }
+
+
+        #closeExplanation:hover {
+            background: #333;
+        }
+
+
+
+        #loadingOverlay {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            display: none;
+
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0, 0, 0, 0.75);
+
+            z-index: 100;
+        }
+
+
+        #loadingTitle {
+            margin-bottom: 8px;
+
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+
+        #loadingStatus {
+            margin-bottom: 15px;
+
+            color: #aaa;
+
+            font-size: 12px;
+        }
+
+
+        #loadingBarBackground {
+            width: 350px;
+            max-width: 70%;
+
+            height: 8px;
+
+            background: #222;
+
+            border: 1px solid #555;
+
+            overflow: hidden;
+        }
+
+
+        #loadingBar {
+            width: 0%;
+            height: 100%;
+
+            background: #00ff88;
+
+            transition: width 0.1s linear;
+        }
+
+
+        #loadingPercentage {
+            margin-top: 8px;
+
+            color: #ccc;
+
+            font-size: 12px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            #particleSlider {
+                width: 130px;
+            }
+
+            #particleGuide {
+                bottom: 12px;
+                left: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div id="title">
+        AtomSim
+    </div>
+
+
+
+
+    <div id="ui">
+
+        <div id="uiTitle">
+            Particle Count
+        </div>
+
+
+        <input
+            type="number"
+            id="particleSlider"
+            min="1"
+            step="1"
+        >
+
+
+        <button id="applybutton">
+            Apply
+        </button>
+<BR>
+
+        <button id="explanationButton">
+            Explanation
+        </button>
+
+
+        <div id="renderEndSection">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    id="renderEndFrame"
+                >
+
+                Render End Frame
+
+            </label>
+
+
+            <div id="renderEndDescription">
+
+                For large particle counts, the simulation
+                can be calculated first and only the final
+                frame will be displayed.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+    <div id="particleGuide">
+
+        <div id="guideTitle">
+            <H2>Particle Count Guide</H2>
+        </div>
+
+
+        <div class="guideRow">
+            <span style="color: green; font-size: 17px;">●</span>
+            1 - 1,000 -- RUNS SMOOTHLY
+        </div>
+
+
+        <div class="guideRow">
+            <span style="color: yellow; font-size: 17px;">●</span>
+            1,000 - 3,000 -- A BIT LAGGY
+        </div>
+
+
+        <div class="guideRow">
+            <span style="color: rgb(255, 128, 0); font-size: 17px;">●</span>
+            3,000 - 10,000 -- GOTTA HAVE A GOOD COMPUTER
+        </div>
+
+        <div class="guideRow">
+            <span style="color: red; font-size: 17px;">●</span>
+            10,000+ -- HELL NAH, NASA COMPUTING TYPE SHIT
+        </div>
+
+
+    </div>
+
+    <div id="orbitControlsGuide">
+
+        <div id="lol">
+            <H1>Orbit Controls Guide</H1>
+        </div>
+
+
+
+        <div class="guideRow">
+            <span style="color: white; font-size: 25px;">●</span>
+            Left Click + Drag -- Rotate
+        </div>
+
+        <div class="guideRow">
+            <span style="color: white; font-size: 25px;">●</span>
+            Scroll Wheel -- Zoom
+        </div>
+
+
+    </div>
+
+
+    <dialog id="explanationDialog">
+        <p><h3>
+            AtomSim is a particle-based simulation designed to
+            demonstrate how atoms can arrange themselves into
+            different molecular geometries.
+        </h3>
+        </p>
+
+
+        <h3>
+            The Magic Numbers
+        </h3>
+
+        <p>
+            If you take a look at the code, you'll find a few variables that are
+            just set at a fixed value, or change overtime in a specific manner.
+            I would like to state that, this is a very simplified version of simulation.
+            That means we are not factoring in the little details about atoms, 
+            all the calculations and stuff that make things way more complex.
+            So we solve this problem by setting some values ourselves, making sure
+            its visually appealing and understandable. These values are what I call the "Magic Numbers".
+        </p>
+
+
+        <h3>
+            Particles
+        </h3>
+
+        <p>
+            Each red sphere represents a particle. The particles
+            start at random positions around the central atom.
+        </p>
+
+
+        <h3>
+            Repulsion
+        </h3>
+
+        <p>
+            Every particle exerts a repulsive force on the other
+            particles. Every frame, for each particle, force from every other particle exerted is calculated and added, giving the resulting force on that particle.
+        </p>
+
+
+        <h3>
+            Movement
+        </h3>
+
+        <p>
+            The forces change the velocity of each particle,
+            which changes its position over time. The particles
+            therefore move until the forces acting on the system
+            become relatively small.
+        </p>
+
+
+        <h3>
+            Connections
+        </h3>
+
+        <p>
+            AtomSim detects if the particles have reached a stable
+            configuration by checking distance travlleled for each particle.
+            If any particle moves less than 0.01 units in a frame, it is 
+            considered stable and cylinders(connection lines) are drawn between
+            the particle and the closest surrounding particles.
+        </p>
+
+
+        <h3>
+            Normalisation
+        </h3>
+
+        <p>
+            To simulate attraction between nucleus and particles so that 
+            particles don't fly away, the forces are normalised.
+            <br><br>NOTE: This is not real life physics, as we cannot factor in multiple things
+            and go very complex with the calculations, we use a simplified version 
+            of the physics to make it work in a way that is visually appealing 
+            and understandable.<br><br>
+            Imagine a ball being rotated with a string. 100% normalisation means
+            the string can never stretch, a 10% normalisation means a strecthy string
+            . Normalisation
+            is done by first calculating the distance of each particle from centre
+            and depending if the particle is farther or closer than the radius set
+            , a force is applied in opposite direction, which here is set to 10% of the force.
+            If it is set at 100%, the particles will be constrained to a perfect sphere.
+            The force being referenced here is the one being applied on the particle
+            by other particles, in the direction parallel to its direction from centre.
+        </p>
+
+        <h3>
+            Dampening
+        </h3>
+
+        <p>
+            In real life, energy is lost as time passes. To simulate that, 
+            we multiply the velocity of each particle by a factor less than 1, 
+            which reduces the velocity of each particle over time. 
+            This is called dampening.
+        </p>
+
+
+        <button id="closeExplanation">
+            Close
+        </button>
+
+    </dialog>
+
+
+
+    <div id="loadingOverlay">
+
+        <div id="loadingTitle">
+            Calculating Simulation
+        </div>
+
+
+        <div id="loadingStatus">
+            Please wait...
+        </div>
+
+
+        <div id="loadingBarBackground">
+
+            <div id="loadingBar"></div>
+
+        </div>
+
+
+        <div id="loadingPercentage">
+            0%
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const explanationButton =
+            document.getElementById("explanationButton");
+
+        const explanationDialog =
+            document.getElementById("explanationDialog");
+
+        const closeExplanation =
+            document.getElementById("closeExplanation");
+
+
+        explanationButton.addEventListener("click", function () {
+
+            explanationDialog.showModal();
+
+        });
+
+
+        closeExplanation.addEventListener("click", function () {
+
+            explanationDialog.close();
+
+        });
+
+    </script>
+
+
+    <script type="module" src="/main.js"></script>
+
+
+</body>
+
+</HTML>
