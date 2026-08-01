@@ -475,3 +475,38 @@ var noOfParticles = 0;
 var repulsion_force = 1000000000000;
 var cylinderTolerance = 0.4;
 var renderEnd = false;
+
+
+
+const welcomeOverlay = document.createElement("div");
+welcomeOverlay.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75); display: flex; align-items: center;
+    justify-content: center; z-index: 200;
+`;
+
+const welcomeBox = document.createElement("div");
+welcomeBox.style.cssText = `
+    background: #111; border: 1px solid #777; padding: 30px;
+    max-width: 400px; width: 80%; color: white; font-family: Arial, sans-serif;
+`;
+
+welcomeBox.innerHTML = `
+    <h2 style="margin-top:0; font-size:18px;">Welcome to AtomSim</h2>
+    <p style="color:#ccc; font-size:14px; line-height:1.6;">
+        Type a number of particles in the box on the left (try <strong>1000</strong>) and hit <strong>Apply</strong> to run the simulation.<br><br>
+        Click <strong>Explanation</strong> to understand how it works.<br><br>
+        <strong>Left click + drag</strong> to rotate &nbsp;•&nbsp; <strong>Scroll</strong> to zoom
+    </p>
+    <button id="welcomeClose" style="
+        padding: 7px 14px; background: #222; color: white;
+        border: 1px solid #777; cursor: pointer; font-size: 13px;
+    ">Got it</button>
+`;
+
+welcomeOverlay.appendChild(welcomeBox);
+document.body.appendChild(welcomeOverlay);
+
+document.getElementById("welcomeClose").addEventListener("click", function() {
+    welcomeOverlay.style.display = "none";
+});
