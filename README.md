@@ -13,7 +13,7 @@ A 3D particle simulation inspired by **VSEPR theory** from 11th grade chemistry,
 
 ## What is this?
 
-V1 was built in VPython with no controls or interaction. V2 is a complete rewrite in **Three.js**, with a proper UI, orbit controls, and a much smoother simulation — all written by reading raw documentation.
+V1 was built in VPython with no controls or interaction. V2 is a complete rewrite in **Three.js**, with a proper UI, orbit controls, and a much smoother simulation.
 
 The simulation places particles around a central atom and lets repulsive forces push them apart until they settle into stable molecular geometries (like tetrahedral, trigonal planar, etc.).
 
