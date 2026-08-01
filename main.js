@@ -275,7 +275,7 @@ function addingParticles(Changed_No){
     }
     radius = (Changed_No*0.3*radius)+20;
     repulsion_force = Changed_No * repulsion_force + 1000000;
-    camera.position.set(0,((Changed_No)+200)*2,0);
+    camera.position.set(0,((Changed_No)+200)*1.2,0);
     camera.lookAt(0,0,0)
     randomVelocitiesInitation();
     CAtom.geometry = new THREE.SphereGeometry((Changed_No*0.005)+10);
