@@ -473,7 +473,7 @@ var velocities = [];
 var time_run = 20;
 var noOfParticles = 0;
 var repulsion_force = 1000000000000;
-var cylinderTolerance = 0.4;
+var cylinderTolerance = 0.2;
 var renderEnd = false;
 
 
